@@ -1,3 +1,8 @@
+" File              : header.vim
+" Author            : I'mCylon <imcylonrs@gmail.com>
+" Date              : 20.01.2022
+" Last Modified Date: 20.01.2022
+" Last Modified By  : I'mCylon <imcylonrs@gmail.com>
 " PROPERTIES AND FUNCTIONS FOR GENERAL PURPOSES
 " ---------------------------------------------
 " Set default global values
@@ -108,6 +113,11 @@ fun s:set_props()
         let b:block_comment = 1
         let b:comment_begin = '--[[--'
         let b:comment_end = '--]]--'
+    " ----------------------------------
+    elseif b:filetype == 'julia'
+        let b:first_line = '#!/usr/bin/env julia'
+        let b:first_line_pattern = '#!\s*/usr/bin/env\s* julia'
+        let b:comment_char = '#'
     " ----------------------------------
     elseif b:filetype == 'perl'
         let b:first_line = '#!/usr/bin/env perl'

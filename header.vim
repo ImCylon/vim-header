@@ -116,6 +116,11 @@ fun s:set_props()
         let b:comment_begin = '--[[--'
         let b:comment_end = '--]]--'
     " ----------------------------------
+    elseif b:filetype == 'julia'
+        let b:first_line = '#!/usr/bin/env julia'
+        let b:first_line_pattern = '#!\s*/usr/bin/env\s* perl'
+        let b:comment_char = '#'
+    " ----------------------------------
     elseif b:filetype == 'perl'
         let b:first_line = '#!/usr/bin/env perl'
         let b:first_line_pattern = '#!\s*/usr/bin/env\s* perl'
