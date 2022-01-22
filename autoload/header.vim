@@ -233,11 +233,11 @@ fun s:set_props()
     " ----------------------------------
     elseif b:filetype == 'julia'
         let b:block_comment = 1
-        let b:comment_char = '#'
         let b:first_line = '#!/usr/bin/env julia'
         let b:first_line_pattern = '#!\s*/usr/bin/env\s* julia'
         let b:comment_begin = '#='
         let b:comment_end = '=#'
+        " let b:comment_char = '#'
     " ----------------------------------
     elseif b:filetype == 'vimwiki'
         let b:comment_char = '[//]: #'
