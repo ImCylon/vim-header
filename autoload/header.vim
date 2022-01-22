@@ -1,7 +1,7 @@
 " File              : header.vim
 " Author            : I'mCylon <imcylonrs@gmail.com>
-" Date              : 20.01.2022
-" Last Modified Date: 20.01.2022
+" Date              : 22.01.2022
+" Last Modified Date: 22.01.2022
 " Last Modified By  : I'mCylon <imcylonrs@gmail.com>
 " PROPERTIES AND FUNCTIONS FOR GENERAL PURPOSES
 " ---------------------------------------------
@@ -78,6 +78,7 @@ fun s:set_props()
         \ b:filetype == 'c' ||
         \ b:filetype == 'cpp' ||
         \ b:filetype == 'css' ||
+        \ (expand('%:e') == 'cfc' && b:filetype == 'cf') ||
         \ b:filetype == 'groovy' ||
         \ b:filetype == 'java' ||
         \ b:filetype == 'kotlin' ||
@@ -113,11 +114,6 @@ fun s:set_props()
         let b:block_comment = 1
         let b:comment_begin = '--[[--'
         let b:comment_end = '--]]--'
-    " ----------------------------------
-    elseif b:filetype == 'julia'
-        let b:first_line = '#!/usr/bin/env julia'
-        let b:first_line_pattern = '#!\s*/usr/bin/env\s* julia'
-        let b:comment_char = '#'
     " ----------------------------------
     elseif b:filetype == 'perl'
         let b:first_line = '#!/usr/bin/env perl'
@@ -160,7 +156,8 @@ fun s:set_props()
     elseif b:filetype == "lisp" ||
           \ b:filetype == "scheme" ||
           \ b:filetype == "asm" ||
-          \ b:filetype == "clojure"
+          \ b:filetype == "clojure" ||
+          \ b:filetype == "racket"
         let b:comment_char = ";;"
     " ----------------------------------
     elseif b:filetype == "cs" ||
@@ -184,6 +181,19 @@ fun s:set_props()
         let b:comment_char = ' -'
         let b:comment_begin = '<!--'
         let b:comment_end = '-->'
+    " ----------------------------------
+    elseif b:filetype == 'cf'
+        let b:block_comment = 1
+        let b:comment_char = ' -- '
+        let b:comment_begin = '<!---'
+        let b:comment_end = '--->'
+    "-----------------------------------
+    elseif b:filetype == 'cfm' ||
+          \ b:filetype == 'cfml'
+        let b:block_comment = 1
+        let b:comment_char = ' -- '
+        let b:comment_begin = '<!---'
+        let b:comment_end = '--->'
     "-----------------------------------
     elseif b:filetype == 'pug'
         let b:first_line = '//-'
@@ -221,10 +231,27 @@ fun s:set_props()
     elseif b:filetype == 'make'
         let b:comment_char = '#'
     " ----------------------------------
-    elseif b:filetype == 'markdown'
+    elseif b:filetype == 'julia'
         let b:block_comment = 1
-        let b:comment_begin = '```'
-        let b:comment_end = '```'
+        let b:comment_char = '#'
+        let b:first_line = '#!/usr/bin/env julia'
+        let b:first_line_pattern = '#!\s*/usr/bin/env\s* julia'
+        let b:comment_begin = '#='
+        let b:comment_end = '=#'
+    " ----------------------------------
+    elseif b:filetype == 'vimwiki'
+        let b:comment_char = '[//]: #'
+        let b:block_comment = 1
+        let b:comment_begin = '<!-- '
+        let b:comment_end = '-->'
+        " ----------------------------------
+    elseif b:filetype == 'tcl'
+       let b:first_line = '#!/usr/bin/env tclsh'
+       let b:first_line_pattern = '#!\s*/usr/bin/env\s* tclsh'
+       let b:comment_char = '#'
+    " ----------------------------------
+    elseif b:filetype == 'ada'
+        let b:comment_char = '--'
     else
         let b:is_filetype_available = 0
     endif
@@ -744,3 +771,12 @@ fun header#add_header(type, license, silent)
         echo 'No defined comment syntax for ' . filetype . ' filetype.'
     endif
 endfun
+
+fun header#update_header()
+    call s:set_props()
+    if b:is_filetype_available && s:has_required_headers_in_range(g:header_max_size)
+        let l:longer_header_length = strchars(s:get_longer_header(b:user_headers))
+        call s:update_fields(l:longer_header_length)
+        call s:update_header()
+    endif
+endfunc
